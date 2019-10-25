@@ -176,7 +176,17 @@ def custom_index(input_list, value):
 
     """
 
-    return 0
+    count = 0
+
+    for word in input_list:
+        if word == value:
+            return count 
+
+        else:
+            count = count + 1    
+
+
+        
 
 
 def custom_count(input_list, value):
@@ -191,8 +201,11 @@ def custom_count(input_list, value):
         2
 
     """
-
-    return 0
+    count = 0
+    for word in input_list:
+        if word == value:
+            count = count + 1
+    return count
 
 
 def custom_reverse(input_list):
@@ -211,7 +224,7 @@ def custom_reverse(input_list):
 
     """
 
-    pass
+    input_list[-1::-1] = input_list
 
 
 def custom_contains(input_list, value):
@@ -230,8 +243,15 @@ def custom_contains(input_list, value):
         True
 
     """
-
-    return None
+    count = 0
+    for num in input_list:
+        if num == value:
+            count += 1
+            break
+    if count == 1:
+        return True
+    else:
+        return False
 
 
 def custom_equality(some_list, another_list):
@@ -250,7 +270,22 @@ def custom_equality(some_list, another_list):
 
     """
 
-    return None
+    count_index = 0
+    count_matches = 0
+
+    for word in some_list:
+        if word != another_list[count_index]:
+            count_matches += 1
+            break
+
+        else:
+            count_index += 1
+
+        
+    if count_matches > 0:
+        return False
+    else:
+        return True 
 
 
 ##############################################################################
