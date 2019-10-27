@@ -17,6 +17,7 @@ def get_restaurant_ratings(file):
 
     return restaurant_ratings
 
+#Change for commit
 
 restaurant_ratings = get_restaurant_ratings("scores.txt")
 # restaurant_ratings_key_list = sorted(restaurant_ratings)
