@@ -1,38 +1,68 @@
 """Restaurant rating lister."""
 
 
-def get_restaurant_ratings(file):
-
-    restaurant_ratings = {}
-
-    the_file = open(file)
-
-    for line in the_file:
+def get_restaurant_ratings(ratings_file):
+    """Restaurant rating lister."""
+    # open a file
+    ratings_dict = {}
+    ratings = open(ratings_file)
+    # remove extra space from the file
+    for line in ratings:
         line = line.rstrip()
-        list_line = line.split(":")
-        name = list_line[0]
-        rating = list_line[1]
+        restaurant, rating = line.split(":")
+        ratings_dict[restaurant] = rating
 
-        restaurant_ratings[name] = rating
+    return ratings_dict
 
-    return restaurant_ratings
 
-#Change for commit
+def get_user_restaurant_ratings(ratings_dict):
+    """Gets user restaurant name and raiting and adds it to restaurant
+    dictionary"""
 
-restaurant_ratings = get_restaurant_ratings("scores.txt")
-# restaurant_ratings_key_list = sorted(restaurant_ratings)
+    # get user input for restaurant name and rating
+    print("Please share a restaraunt name.")
+    user_restaurant_name = input(">")
+    user_restaurant_name = user_restaurant_name.title()
 
-# for key in restaurant_ratings_key_list:
-#     score = restaurant_ratings[key]
-#     print("{} is rated at {}.".format(key, score))
+    while True:
+        print("Please share the corresponding restaurant rating.")
+        user_restaurant_rating = input(">")
 
-new_restaurant_name = input("Enter new restaurant name. ")
-new_restaurant_rating = input("Enter rating for {}. ".format(new_restaurant_name))
+        if int(user_restaurant_rating) > 5:
+            print("Invalid rating. Ratings should be integers, 1-5.")
+        elif int(user_restaurant_rating) < 1:
+            print("Invalid rating. Ratings should be integers, 1-5.")
+        else:
+            break
 
-restaurant_ratings[new_restaurant_name] = new_restaurant_rating
+    ratings_dict[user_restaurant_name] = user_restaurant_rating
 
-restaurant_ratings_key_list = sorted(restaurant_ratings)
+    return ratings_dict
 
-for key in restaurant_ratings_key_list:
-    score = restaurant_ratings[key]
-    print("{} is rated at {}.".format(key, score))
+
+def list_sorted_restaurant_ratings(final_ratings_dict):
+    # use .tems to return a list of tuples, sort it, and then print ot the list
+    for restaurant, rating in sorted(final_ratings_dict.items()):
+        print(f"{restaurant} is rated at {rating}.")
+
+def give_user_choices():
+
+    ratings_dict = get_restaurant_ratings("scores.txt")
+
+    while True:
+        print("Below is a list of choices for you on restaurants")
+        print("[1] - See all restaurant ratings in alphabetical order")
+        print("[2] - Add a new restaurant and rating")
+        print("[3] - Quit")
+        user_input = int(input("Type 1, 2 or 3 to choose: "))
+
+        if user_input == 1:
+            list_sorted_restaurant_ratings(ratings_dict)
+        elif user_input == 2:
+            ratings_dict = get_user_restaurant_ratings(ratings_dict)
+        elif user_input == 3:
+            print("Quitting...")
+            break
+
+
+give_user_choices()
