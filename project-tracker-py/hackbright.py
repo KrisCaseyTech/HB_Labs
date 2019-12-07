@@ -11,13 +11,7 @@ app = Flask(__name__)
 db = SQLAlchemy()
 
 
-def connect_to_db(app):
-    """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///hackbright'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.app = app
-    db.init_app(app)
 
 
 def get_student_by_github(github):
@@ -85,13 +79,23 @@ def get_grade_by_github_title(github, title):
 
     row = db_cursor.fetchone()
 
-    print('Grade: {}'.format(row[0]))
+    print('Grade: {}'.format(row))
 
 
 def assign_grade(github, title, grade):
     """Assign a student a grade on an assignment and print a confirmation."""
-    pass
+    QUERY = """
+        INSERT INTO grades (student_github, project_title, grade)
+        VALUES (:github, :title, :grade)
+            """
+    print(github, title, grade)
 
+    db.session.execute(QUERY, {'github': github,
+                               'title': title,
+                               'grade': grade})
+    db.session.commit()
+
+    print(f"Successfully added project grade: {github} {title} {grade}")
 
 def handle_input():
     """Main loop.
@@ -120,6 +124,14 @@ def handle_input():
             if command != "quit":
                 print("Invalid Entry. Try again.")
 
+
+def connect_to_db(app):
+    """Connect the database to our Flask app."""
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///hackbright'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
 
 if __name__ == "__main__":
     connect_to_db(app)
