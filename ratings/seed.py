@@ -2,11 +2,15 @@
 
 from sqlalchemy import func
 from model import User
+from model import Movie
+from model import Rating
 # from model import Rating
 # from model import Movie
 
 from model import connect_to_db, db
 from server import app
+
+from datetime import datetime
 
 
 def load_users():
@@ -36,11 +40,48 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+    print("Movies")
 
+    Movie.query.delete()
 
+    for row in open("seed_data/u.item"):
+        row = row.rstrip()
+        items = row.split("|")
+        movie_id = items[0]
+        title = items[1]
+        released_at = items[2]
+        imdb_url = items[4]
+        #remove year from title
+        title = title.split(" (")
+        title = title[0]
+        #need to formate released at date
+        date_format = "%d-%b-%Y"
+        released_at = datetime.strptime(released_at, date_format)
+
+        movie = Movie(movie_id=movie_id,
+                        title=title,
+                        released_at=released_at,
+                        imdb_url=imdb_url)
+        db.session.add(movie)
+    db.session.commit()
+        
 def load_ratings():
     """Load ratings from u.data into database."""
+    print("Ratings")
+    Rating.query.delete()
 
+    for row in open("seed_data/u.data"):
+        row = row.rstrip()
+        items = row.split("\t")
+        user_id = items[0]
+        movie_id = items[1]
+        score = items[2]
+
+        rating = Rating(user_id=user_id,
+                        movie_id=movie_id,
+                        score=score)
+        db.session.add(rating)
+    db.session.commit()
 
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
