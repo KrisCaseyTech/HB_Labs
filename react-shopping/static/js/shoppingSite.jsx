@@ -3,10 +3,35 @@ class App extends React.Component {
     super();
 
     this.state = {
-      melons: {}
+      melons: {},
+      shoppingCart: {}
     };
 
     this.renderAllMelonsPage = this.renderAllMelonsPage.bind(this);
+  }
+
+  componentDidMount() {
+    $.get('/api/melons', (results) => {
+      this.setState({melons: results});
+    })
+  }
+
+  addMelonToCart(melon) {
+    this.setState((prevState) => {
+      const newShoppingCart = Object.assign({}, prevState.shoppingCart);
+        
+      if (newShoppingCart[melon.melon_code]) {
+        newShoppingCart[melon.melon_code] += 1;
+      }
+      else {
+        newShoppingCart[melon.melon_code] = 1;
+      }
+
+      return {
+        shoppingCart: newShoppingCart
+      }
+    })
+
   }
 
   renderHomePage() {
@@ -22,17 +47,23 @@ class App extends React.Component {
     const melonCards = [];
 
     for (const melon of Object.values(this.state.melons)) {
+      const addMelonHandler = (melon) => {
+        this.addMelonToCart(melon);
+      };
+
       const melonCard = (
         <MelonCard
-          key="cren"
-          code="cren"
-          name="Crenshaw"
-          imgUrl="http://www.rareseeds.com/assets/1/14/DimRegular/crenshaw.jpg"
-          price={2}
+          key={melon.melon_code}
+          code={melon.melon_code}
+          name={melon.name}
+          imgUrl={melon.image_url}
+          price={melon.price}
+          handleAddToCart={addMelonHandler}
         />
       );
 
       melonCards.push(melonCard);
+
     }
 
     return (
